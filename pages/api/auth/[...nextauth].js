@@ -30,7 +30,6 @@ const authOptions = {
           return {
             token: token,
             email: emailOrPhone,
-            image: "https://via.placeholder.com/80",
           };
         }
         return null;

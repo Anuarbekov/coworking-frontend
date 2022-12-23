@@ -1,13 +1,12 @@
 import ModalBook from "./Modals/Modal";
 import { Component } from "react";
-import ShowConfirm from "./Modals/ConfirmDropModal";
 import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import bootstrap5Plugin from "@fullcalendar/bootstrap5";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default class Main extends Component {
@@ -60,22 +59,7 @@ export default class Main extends Component {
               bootstrap5Plugin,
             ]}
             eventDrop={(info) => {
-              if (status === "authenticated") {
-                ShowConfirm(info);
-              } else {
-                toast.error("You can't update event, you are not logged in!", {
-                  position: "top-right",
-                  autoClose: 2000,
-                  hideProgressBar: false,
-                  newestOnTop: false,
-                  closeOnClick: true,
-                  rtl: false,
-                  pauseOnFocusLoss: false,
-                  pauseOnHover: true,
-                  theme: "dark",
-                });
-                info.revert();
-              }
+              info.revert();
             }}
             headerToolbar={{
               left: "prev,next today",

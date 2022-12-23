@@ -16,8 +16,12 @@ import {
 } from "../../redux-store/features/eventBook/counterSlice";
 import axios from "axios";
 import InputMask from "react-input-mask";
+import { getSession, useSession } from "next-auth/react";
 
-const ModalBook = () => {
+const rooms = { Abai: 2, Conference: 1, Ybyrai: 3, Coworking: 4 };
+
+const ModalBook = ({ session }) => {
+  const { data, status } = useSession();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
   const {
@@ -31,10 +35,30 @@ const ModalBook = () => {
     telegramId,
   } = useSelector((state) => state.eventBook);
 
-  const handleBook = () => {
+  const handleBook = async () => {
     // will go to backend and create new event
-    console.log(startDate + "T" + startTime + ":" + endTime);
-
+    const getTime = (time) => {
+      if (time > 9) {
+        return time;
+      } else {
+        return "0" + time;
+      }
+    };
+    const response = await axios.post(
+      `http://localhost:5000/users/1/events`,
+      {
+        title,
+        description,
+        start_time: startDate + "T" + getTime(startTime) + ":00",
+        end_time: startDate + "T" + getTime(endTime) + ":00",
+        userId: 1,
+        roomId: rooms[room],
+        is_approved: false,
+        is_passed: false,
+      },
+      { headers: { Authorization: `Bearer ${data.user.token}` } }
+    );
+    console.log(response.data);
     setIsModalOpen(false);
   };
   const onChange = (date, dateString) => {
@@ -175,3 +199,12 @@ const ModalBook = () => {
 };
 
 export default ModalBook;
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  return {
+    props: {
+      session: session,
+    },
+  };
+}
