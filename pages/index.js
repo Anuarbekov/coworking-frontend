@@ -2,8 +2,15 @@ import Main from "../components/Main";
 import { useSession, signIn, signOut, getSession } from "next-auth/react";
 import Link from "next/link";
 import axios from "axios";
+import { verify } from "jsonwebtoken";
+
+import { useEffect } from "react";
 const App = ({ session }) => {
   const { data, status } = useSession();
+  const secret = process.env.JWT_SECRET;
+  const usesecret = () => {
+    verify(session.user.token, secret);
+  };
   const handleGetAllUsers = async (e) => {
     e.preventDefault();
     try {
@@ -17,6 +24,7 @@ const App = ({ session }) => {
   };
   return (
     <div className="height-screen width-screen">
+      <button onClick={usesecret}>click</button>
       {status === "authenticated" ? (
         <>
           {session.user.email}
